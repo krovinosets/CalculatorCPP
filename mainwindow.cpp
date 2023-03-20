@@ -56,7 +56,10 @@ void MainWindow::on_PB_numspace_clicked()
             outputForm->setText(outputForm->text() + btn->text());
         if(!isEnabledFuncButtons())
             enableFuncButtons(true);
-        if(getLastDigitShort(outputForm->text().toStdString()).find(".") != std::string::npos)
+        struct option option;
+        option.opt = 2;
+        option.str = outputForm->text().toStdString();
+        if(choose(option).find(".") != std::string::npos)
             this->ui->PB_dot->setEnabled(false);
     }
 }
@@ -73,10 +76,13 @@ void MainWindow::on_PB_funcspace_clicked()
             outputForm->setText(outputForm->text());
         this->ui->LB_answer->setText("");
     }
+    struct option option;
+    option.opt = 2;
+    option.str = outputForm->text().toStdString();
     if(len < MAX_LEN
             && (outputForm->text() != '0' || (outputForm->text() == '0' && btn->text() == "."))
             && ((QString) "0123456789").contains(outputForm->text().back())
-            && ((btn->text() == "." && (getLastDigitShort(outputForm->text().toStdString()).find(".")) == std::string::npos) || btn->text() != ".")){
+            && ((btn->text() == "." && (choose(option).find(".")) == std::string::npos) || btn->text() != ".")){
         outputForm->setText(outputForm->text() + btn->text());
         enableFuncButtons(false);
         if(this->ui->PB_dot->isEnabled())
@@ -105,7 +111,10 @@ void MainWindow::on_PB_del_clicked()
             enableFuncButtons(false);
         else
             enableFuncButtons(true);
-        if(getLastDigitShort(outputForm->text().toStdString()).find(".") != std::string::npos)
+        struct option option;
+        option.opt = 2;
+        option.str = outputForm->text().toStdString();
+        if(choose(option).find(".") != std::string::npos)
             this->ui->PB_dot->setEnabled(false);
         else
             this->ui->PB_dot->setEnabled(true);
@@ -119,7 +128,10 @@ void MainWindow::on_PB_fin_clicked()
     if(((QString) "+-/*").contains(str.back()))
         str = str.mid(0, str.size()-1);
     qDebug() << "Original String: " << str;
-    QString answer = QString::fromUtf8(reversePolskaFinal(str.toStdString()));
+    struct option option;
+    option.opt = 1;
+    option.str = str.toStdString();
+    QString answer = QString::fromUtf8(choose(option));
     qDebug() << "result: " << answer;
     this->ui->LB_answer->setText("= " + answer);
 }
@@ -138,10 +150,15 @@ void MainWindow::on_PB_Mplus_clicked()
     QLabel *AnsForm = this->ui->LB_answer;
     if(AnsForm->text() != "" && AnsForm->text() != "= Ошибка!"){
         QString res;
+        struct option option;
+        option.opt = 1;
         if(AnsForm->text().mid(2,AnsForm->text().length()-2).toStdString()[0] == '-'){
-            res = QString::fromUtf8(reversePolskaFinal(((ans->text() != "None") ? ans->text().toStdString() + "-" : "") + AnsForm->text().mid(3,AnsForm->text().length()-3).toStdString()));
+            option.str = ((ans->text() != "None") ? ans->text().toStdString() + "-" : "") + AnsForm->text().mid(3,AnsForm->text().length()-3).toStdString();
+
+            res = QString::fromUtf8(choose(option));
         } else {
-            res = QString::fromUtf8(reversePolskaFinal(((ans->text() != "None") ? ans->text().toStdString() + "+" : "") + AnsForm->text().mid(2,AnsForm->text().length()-2).toStdString()));
+            option.str = ((ans->text() != "None") ? ans->text().toStdString() + "+" : "") + AnsForm->text().mid(2,AnsForm->text().length()-2).toStdString();
+            res = QString::fromUtf8(choose(option));
 
         }
         ans->setText(res);
@@ -154,10 +171,14 @@ void MainWindow::on_PB_Mminus_clicked()
     QLabel *AnsForm = this->ui->LB_answer;
     if(AnsForm->text() != "" && AnsForm->text() != "= Ошибка!"){
         QString res;
+        struct option option;
+        option.opt = 1;
         if(AnsForm->text().mid(2,AnsForm->text().length()-2).toStdString()[0] == '-'){
-            res = QString::fromUtf8(reversePolskaFinal(((ans->text() != "None") ? ans->text().toStdString() + "+" : "+") + AnsForm->text().mid(3,AnsForm->text().length()-3).toStdString()));
+            option.str = ((ans->text() != "None") ? ans->text().toStdString() + "+" : "") + AnsForm->text().mid(2,AnsForm->text().length()-2).toStdString();
+            res = QString::fromUtf8(choose(option));
         } else {
-            res = QString::fromUtf8(reversePolskaFinal(((ans->text() != "None") ? ans->text().toStdString() + "-" : "-") + AnsForm->text().mid(2,AnsForm->text().length()-2).toStdString()));
+            option.str = ((ans->text() != "None") ? ans->text().toStdString() + "-" : "") + AnsForm->text().mid(3,AnsForm->text().length()-3).toStdString();
+            res = QString::fromUtf8(choose(option));
 
         }
         ans->setText(res);

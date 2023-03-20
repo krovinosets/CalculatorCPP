@@ -1,4 +1,6 @@
 #include "functions.h"
+#include <stack>
+#include <cmath>
 
 std::vector<std::string> split(std::string str){
     std::vector<std::string> strings;
@@ -19,7 +21,6 @@ bool replace(std::string &str, const std::string &from, const std::string &to) {
 }
 
 std::string getLastDigitShort(std::string str){
-    qDebug() << str.c_str();
     replace(str, "+", " ");
     replace(str, "-", " ");
     replace(str, "/", " ");
@@ -109,11 +110,20 @@ std::string reversePolskaFinal(std::string str){
             final_str += std::to_string(result) + " ";
             st_oper.pop();
         }
-        qDebug() << result;
         if(!err){
             final_str = final_str.substr(0, final_str.length()-1);
             final_str = clearZero(&final_str);
         }
     }
     return final_str;
+}
+
+std::string choose(struct option option){
+    std::string result = "Error";
+    if(option.opt == 1)
+        result = reversePolskaFinal(option.str);
+    else if(option.opt == 2)
+        result = getLastDigitShort(option.str);
+
+    return result;
 }
